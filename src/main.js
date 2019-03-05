@@ -1,5 +1,5 @@
 import mOrm from "./mOrm";
-import Student from "./student";
+import Student from "./entities/student";
 
 (async () => {
     const orm = new mOrm();

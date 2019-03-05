@@ -19,7 +19,7 @@ export default class mOrm {
         if(dbConfig.uri){
           const regexp = /^(.*):\/\/(.*):(.*)@(.*):(\d+)\/(.*)$/g
           const [, type, username, password,  host, port, database]= regexp.exec(dbConfig.uri);
-          
+
           this.config = {
             type,
             host,
@@ -27,11 +27,11 @@ export default class mOrm {
             username,
             password,
             database,
-            
+
           };
 
         }else{
-          thisconfig = dbConfig;
+          this.config = dbConfig;
         }
       }
        console.log(this.config);
@@ -46,6 +46,6 @@ export default class mOrm {
       }
 
       await this.dbInstance.initialize();
-      
+
     }
   }
