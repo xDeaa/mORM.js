@@ -2,6 +2,7 @@ import {isEmpty} from 'lodash';
 import {existsSync} from 'fs';
 import path from 'path';
 import PostgreSQL from './engine/postgresql';
+import Entity from './entities/entity';
 
 export default class mOrm {
     configPathName = "./mOrm.config.json";
@@ -46,5 +47,10 @@ export default class mOrm {
 
       await this.dbInstance.initialize();
 
+    }
+
+    getEntity(name){
+        const entity = new Entity(this.dbInstance,name);
+        return entity;
     }
   }

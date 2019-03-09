@@ -25,29 +25,31 @@ export default class PostgreSQL extends Core {
           await this.client.connect();
           if (synchronize == true) {
             this.client.query(`DROP TABLE IF EXISTS ${student.name}`, (err,res) => {
-                console.log(err, res);
-              })
+              if (err){
+                console.log(err);
+                this.client.end();
+              }})
 
               this.client.query(`CREATE TABLE ${student.name}(
-              id INT PRIMARY KEY,
+              id SERIAL PRIMARY KEY,
               firstname VARCHAR(100),
               lastname VARCHAR(100),
-              age INT
-              )`, (err,res) => {
-                  console.log(err, res);
+              age INT)`, (err,res) => {
+                if (err){
+                  console.log(err);
                   this.client.end();
-                })
+                }})
 
           }else {
             this.client.query(`CREATE TABLE IF NOT EXISTS ${student.name}(
-            id INT PRIMARY KEY,
+            id SERIAL PRIMARY KEY,
             firstname VARCHAR(100),
             lastname VARCHAR(100),
-            age INT
-            )`, (err,res) => {
-                console.log(err, res);
+            age INT)`, (err,res) => {
+              if (err){
+                console.log(err);
                 this.client.end();
-              })
+              }})
           }
 
         } catch (e) {
