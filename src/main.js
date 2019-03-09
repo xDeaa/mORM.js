@@ -6,17 +6,13 @@ import Student from "./entities/student";
     try{
         await orm.createConnection(
             {
-            // "uri": "postgres://20180197:@localhost:5432/iLovePragmatic"
             "type": "postgres",
             "host": "localhost",
             "port": 5432,
-            "username": "deaa",
-            "password": "deaa",
+            "username": "postgres",
+            "password": "root",
             "database": "iLovePragmatic",
             "synchronize": true,
-            "entities": [
-                    Student
-                    ]
         });
     }catch(error){
         console.log(error);

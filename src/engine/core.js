@@ -1,6 +1,8 @@
+import Student from "../entities/student"
+
 export default class Core {
 
-    constructor({host, port, username, password, database, synchronize, entities}){
+    constructor({host, port, username, password, database, synchronize=false, entities}){
 
         this.host = host;
         this.port = port;
@@ -8,7 +10,7 @@ export default class Core {
         this.password = password;
         this.database = database;
         this.synchronize = synchronize;
-        this.entities = entities;
+        this.entities = {Student : Student};
     }
 
     dump(){

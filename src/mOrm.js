@@ -34,7 +34,6 @@ export default class mOrm {
           this.config = dbConfig;
         }
       }
-       console.log(this.config);
 
      switch(this.config.type){
         case 'postgres':
