@@ -7,7 +7,9 @@ export default class Entity {
     async save(data) {
       return this.dbInstance.save(this,data);
     }
-    async count() {}
+    async count() {
+      return this.dbInstance.count(this);
+    }
     async findByPk(id, { attributes }) {}
     async findAll({ attributes }) {}
     async findOne({ where, attributes }) {}

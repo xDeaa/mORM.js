@@ -28,6 +28,9 @@ import Student from "./entities/student";
         // console.log(student);
         const saved = await studentEntity.save(student);
         console.log(`New student ${saved.firstname}`);
+        const count = await studentEntity.count();
+        console.log(`${count} rows in the table ${studentEntity.name}`);
+        
 
     }catch(error){
         console.log(error);

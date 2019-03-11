@@ -28,15 +28,13 @@ export default class PostgreSQL extends Core {
             })
           }
           const query = this.createTable(entities);
-          
+
           this.client.query(query,(err,res)=> {
             if(err){
               throw new Error(err)
             }
           })
-
-          
-          
+        
         } catch (e) {
           console.log(e)
           console.log(` Database ${database} doesn't exist`);
@@ -94,7 +92,6 @@ export default class PostgreSQL extends Core {
     }
 
     async save(entity,data){
-      // entity = Object.values(entity);
       const keys = Object.keys(data).join(',');
       const values = Object.values(data);
       const params = values.map((_, i) => `$${i + 1}`).join(',')
@@ -102,5 +99,10 @@ export default class PostgreSQL extends Core {
       const res = await this.client.query(`INSERT INTO ${entity.name}(${keys}) VALUES(${params}) RETURNING *`, values);
       return res.rows[0];
 
+    }
+
+    async count(entity){
+      const res = await this.client.query(`SELECT COUNT(*) FROM ${entity.name}`);
+      return res.rows[0].count;
     }
 }
