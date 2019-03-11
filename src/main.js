@@ -21,6 +21,12 @@ import Student from "./entities/student";
           firstname: 'Dora ',
           lastname: 'Lexploratrice'
         };
+
+        let Upstudent = {
+            id: 5,
+            firstname: 'Andrea',
+            lastname: 'Serrano'
+          };
         
         let id = 5;
         
@@ -34,7 +40,9 @@ import Student from "./entities/student";
         // console.log(`All curent ${studentEntity.name}:`,students);
         // console.log(`Student ${id}:`,student1);
         const studentByOne = await studentEntity.findByOne({where : {firstname:'Dora '}, attributes: ["firstname"]});
-        console.log('Student : ', studentByOne);
+        // console.log('Student : ', studentByOne);
+        const updateStudent = await studentEntity.update(Upstudent)
+        console.log(`Update ${updateStudent.firstname} successfully` );
         
                 
 

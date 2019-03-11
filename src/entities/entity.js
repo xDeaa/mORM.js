@@ -19,7 +19,9 @@ export default class Entity {
     async findByOne({ where, attributes } = {}) {
       return this.dbInstance.findByOne(this.name,{ where, attributes })
     }
-    async update(data) {}
+    async update(data) {
+      return this.dbInstance.update(this.name,data);
+    }
     async remove(data) {}
 
   }

@@ -137,4 +137,19 @@ export default class PostgreSQL extends Core {
       return res.rows[0];
        
      }
+
+     async update(entity,data){
+       const values = Object.values(data)
+       const keys = Object.keys(data).map((key, i) => `${key} = $${i + 1}`).join(',');
+        
+        
+       if(!data.id){
+         console.log('Please enter a Id to update');
+
+       }else{
+        const res = await this.client.query(`UPDATE ${entity} SET ${keys} WHERE id = ${data.id} RETURNING *`, values);
+        return res.rows[0];
+       }
+       
+    }
 }
