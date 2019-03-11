@@ -10,7 +10,9 @@ export default class Entity {
     async count() {
       return this.dbInstance.count(this.name);
     }
-    async findByPk(id, { attributes }) {}
+    async findByPk(id, { attributes } = {}) {
+      return this.dbInstance.findByPk(this.name,id,{ attributes });
+    }
     async findAll({ attributes } = {}) {
        return this.dbInstance.findAll(this.name,{ attributes });
     }

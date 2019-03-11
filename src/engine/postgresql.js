@@ -109,9 +109,23 @@ export default class PostgreSQL extends Core {
     async findAll(entity,{attributes}){
       
       const params = Object.keys(attributes)
-      const query = isEmpty(params) ? '*' : params.join(",")
+      const search = isEmpty(params) ? '*' : params.join(",")
 
-      const res = await this.client.query(`SELECT ${query} FROM ${entity}`);
+      const res = await this.client.query(`SELECT ${search} FROM ${entity}`);
       return res.rows;  
     }
+
+    async findByPk(entity,id,{attributes}){
+      const params = Object.keys(attributes);
+      const search = isEmpty(params) ? '*' : params.join(",");
+      
+      if (typeof(id) != 'number' || isEmpty(id)) {
+        console.log("You must have to enter a number for the Id");
+      }
+      
+      const res = await this.client.query(`SELECT ${search} FROM ${entity} WHERE id = ${id}`)
+      return res.rows[0];
+
+     }
+
 }

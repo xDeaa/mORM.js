@@ -11,17 +11,17 @@ import Student from "./entities/student";
             "port": 5432,
             "username": "20180197",
             "password": "",
-            "database": "iLovePragmatic", 
-            "synchronize": true
+            "database": "iLovePragmatic",
             },
             {
                 entities: [Student]
             });
 
         let student = {
-          firstname: 'Dora',
+          firstname: 'Test ',
           lastname: 'Lexploratrice'
         };
+        let id = 8;
         
         const studentEntity = orm.getEntity('Student');
         const saved = await studentEntity.save(student);
@@ -29,7 +29,9 @@ import Student from "./entities/student";
         // const count = await studentEntity.count();
         // console.log(`${count} rows in the table ${studentEntity.name}`);
         const students = await studentEntity.findAll({ attributes: student});
-        console.log(`All curent ${studentEntity.name}:`,students);
+        const student1 = await studentEntity.findByPk(id,{ attributes: student});
+        // console.log(`All curent ${studentEntity.name}:`,students);
+        console.log(`Student ${id}:`,student1);
                 
 
     }catch(error){
