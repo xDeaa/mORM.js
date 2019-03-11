@@ -115,7 +115,7 @@ export default class PostgreSQL extends Core {
     async findAll(entity,{attributes = []}){
       const search = isEmpty(attributes) ? '*' : attributes.join(",")
       const res = await this.client.query(`SELECT ${search} FROM ${entity}`);
-      Mlog.log(`${entity}  successfully find`);
+      Mlog.log(`${entity}  successfully find all`);
       return res.rows;  
     }
 
@@ -128,7 +128,7 @@ export default class PostgreSQL extends Core {
         return;
       }else{
         const res = await this.client.query(`SELECT ${search} FROM ${entity} WHERE id = ${id}`)
-        Mlog.log(`${entity} successfully find`);
+        Mlog.log(`${entity} successfully find by primary key`);
         return res.rows[0];
       }      
      }  
@@ -140,7 +140,7 @@ export default class PostgreSQL extends Core {
 
       const search = isEmpty(attributes) ? '*' : attributes.join(",")
       const res = await this.client.query(`SELECT ${search} FROM ${entity} WHERE ${keys} LIMIT 5 `,values)
-      Mlog.log(`${entity}  successfully find`);
+      Mlog.log(`${entity}  successfully find by one`);
       return res.rows[0];
        
      }
