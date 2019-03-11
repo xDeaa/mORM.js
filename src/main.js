@@ -18,20 +18,24 @@ import Student from "./entities/student";
             });
 
         let student = {
-          firstname: 'Test ',
+          firstname: 'Dora ',
           lastname: 'Lexploratrice'
         };
-        let id = 8;
+        
+        let id = 5;
         
         const studentEntity = orm.getEntity('Student');
         const saved = await studentEntity.save(student);
         console.log(`New student ${saved.firstname}`);
         // const count = await studentEntity.count();
         // console.log(`${count} rows in the table ${studentEntity.name}`);
-        const students = await studentEntity.findAll({ attributes: student});
-        const student1 = await studentEntity.findByPk(id,{ attributes: student});
+        const students = await studentEntity.findAll({ attributes: ["firstname"]});
+        const student1 = await studentEntity.findByPk(id,{ attributes: ["firstname", "lastname"]});
         // console.log(`All curent ${studentEntity.name}:`,students);
-        console.log(`Student ${id}:`,student1);
+        // console.log(`Student ${id}:`,student1);
+        const studentByOne = await studentEntity.findByOne({where : {firstname:'Dora '}, attributes: ["firstname"]});
+        console.log('Student : ', studentByOne);
+        
                 
 
     }catch(error){

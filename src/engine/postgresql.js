@@ -106,26 +106,36 @@ export default class PostgreSQL extends Core {
       return res.rows[0].count;
     }
 
-    async findAll(entity,{attributes}){
-      
-      const params = Object.keys(attributes)
-      const search = isEmpty(params) ? '*' : params.join(",")
-
+    async findAll(entity,{attributes = []}){
+      const search = isEmpty(attributes) ? '*' : attributes.join(",")
       const res = await this.client.query(`SELECT ${search} FROM ${entity}`);
+
       return res.rows;  
     }
 
-    async findByPk(entity,id,{attributes}){
-      const params = Object.keys(attributes);
-      const search = isEmpty(params) ? '*' : params.join(",");
+    async findByPk(entity,id,{attributes = []}){
+      const search = isEmpty(attributes) ? '*' : attributes.join(",");
       
-      if (typeof(id) != 'number' || isEmpty(id)) {
-        console.log("You must have to enter a number for the Id");
-      }
-      
-      const res = await this.client.query(`SELECT ${search} FROM ${entity} WHERE id = ${id}`)
+      if(id === undefined || id == null ){
+        console.log("You must enter a id");
+
+        return;
+      }else{
+        const res = await this.client.query(`SELECT ${search} FROM ${entity} WHERE id = ${id}`)
+
+        return res.rows[0];
+      }      
+     }  
+     
+     async findByOne(entity,{where = {} ,attributes = []}){
+       
+      const keys = Object.keys(where).map((key, i) => `${key} = $${i + 1}`).join(' AND ');
+      const values = Object.values(where)
+
+      const search = isEmpty(attributes) ? '*' : attributes.join(",")
+      const res = await this.client.query(`SELECT ${search} FROM ${entity} WHERE ${keys} LIMIT 1 `,values)
+
       return res.rows[0];
-
+       
      }
-
 }
