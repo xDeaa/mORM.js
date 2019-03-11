@@ -1,6 +1,6 @@
 import mOrm from "./mOrm";
 import Student from "./student";
-
+ 
 (async () => {
     const orm = new mOrm();
     try{
