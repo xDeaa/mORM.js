@@ -6,20 +6,8 @@ import Mlog from "./libs/mLog";
     const orm = new mOrm();
 
     try{
-        await orm.createConnection(
-            {
-            "type": "postgres",
-            "host": "localhost",
-            "port": 5432,
-            "username": "20180197",
-            "password": "",
-            "database": "iLovePragmatic",
-            "synchronize": true,
-            },
-            {
-                entities: [Student]
-            });
-
+        await orm.createConnection();
+        
         let student = {
             firstname: 'Andrea',
             lastname: 'Serrano'

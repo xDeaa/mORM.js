@@ -3,9 +3,10 @@ import {existsSync} from 'fs';
 import path from 'path';
 import PostgreSQL from './engine/postgresql';
 import Entity from './entities/entity';
+import Config from './mOrm.config';
 
 export default class mOrm {
-    configPathName = "./mOrm.config.json";
+    configPathName = Config;
 
     async createConnection(dbConfig = {}, extras = {entities: []}) {
 
