@@ -1,6 +1,7 @@
 import Core from "./core";
 import {Client } from 'pg';
 import {isEmpty} from 'lodash';
+import Mlog from "../libs/mLog";
 
 export default class PostgreSQL extends Core {
 
@@ -19,22 +20,14 @@ export default class PostgreSQL extends Core {
         try {
          
           await this.client.connect();
-          if(synchronize){
-            const queryDelete = this.dropTable(entities);
-            this.client.query(queryDelete, (err,res)=> {
-              if(err){
-                throw new Error(err);
-              }
-            })
-          }
-          const query = this.createTable(entities);
+          Mlog.log(`Successfully connect to ${this.database}`);
 
-          this.client.query(query,(err,res)=> {
-            if(err){
-              throw new Error(err)
-            }
-          })
-        
+          if(synchronize){
+            this.dropTable(entities);
+      
+          }
+          this.createTable(entities);
+
         } catch (e) {
           console.log(e)
           console.log(` Database ${database} doesn't exist`);
@@ -42,7 +35,7 @@ export default class PostgreSQL extends Core {
 
     }
 
-    createTable(entities){
+    async createTable(entities){
       const arrayEntities = Object.values(entities);
 
           for (const entity of arrayEntities) {
@@ -75,20 +68,31 @@ export default class PostgreSQL extends Core {
                 queryCreate += ", ";
               }
             }
-             queryCreate = queryCreate.slice(0, -2) + ")";
-             return queryCreate;
+
+            queryCreate = queryCreate.slice(0, -2) + ")";
+            try{
+              await this.client.query(queryCreate)
+              Mlog.log(`Table ${tableName} created successfully`);
+            }catch(e){
+              throw new Error(e);
+            }
+
           }
     }
 
-    dropTable(entities){
+    async dropTable(entities){
       const arrayEntities = Object.values(entities);
 
       for (const entity of arrayEntities) {
         const { name: tableName } = entity.meta();
         let queryDelete = `DROP TABLE IF EXISTS ${tableName}`
-        return queryDelete;
+        try {
+          await this.client.query(queryDelete);
+          Mlog.log(`Table ${tableName} deleted successfully`);
+        } catch (e) {
+          throw new Error(e);
+        }
       }
-    
     }
 
     async save(entity,data){
@@ -97,19 +101,21 @@ export default class PostgreSQL extends Core {
       const params = values.map((_, i) => `$${i + 1}`).join(',')
       
       const res = await this.client.query(`INSERT INTO ${entity}(${keys}) VALUES(${params}) RETURNING *`, values);
+      Mlog.log(`${entity} successfully created`);
       return res.rows[0];
 
     }
 
     async count(entity){
       const res = await this.client.query(`SELECT COUNT(*) FROM ${entity}`);
+      Mlog.log(`${res.rows[0].count} in table ${entity}`);
       return res.rows[0].count;
     }
 
     async findAll(entity,{attributes = []}){
       const search = isEmpty(attributes) ? '*' : attributes.join(",")
       const res = await this.client.query(`SELECT ${search} FROM ${entity}`);
-
+      Mlog.log(`${entity}  successfully find`);
       return res.rows;  
     }
 
@@ -122,7 +128,7 @@ export default class PostgreSQL extends Core {
         return;
       }else{
         const res = await this.client.query(`SELECT ${search} FROM ${entity} WHERE id = ${id}`)
-
+        Mlog.log(`${entity} successfully find`);
         return res.rows[0];
       }      
      }  
@@ -134,6 +140,7 @@ export default class PostgreSQL extends Core {
 
       const search = isEmpty(attributes) ? '*' : attributes.join(",")
       const res = await this.client.query(`SELECT ${search} FROM ${entity} WHERE ${keys} LIMIT 5 `,values)
+      Mlog.log(`${entity}  successfully find`);
       return res.rows[0];
        
      }
@@ -142,12 +149,12 @@ export default class PostgreSQL extends Core {
        const values = Object.values(data)
        const keys = Object.keys(data).map((key, i) => `${key} = $${i + 1}`).join(',');
         
-        
        if(!data.id){
          console.log('Please enter a Id to update');
 
        }else{
         const res = await this.client.query(`UPDATE ${entity} SET ${keys} WHERE id = ${data.id} RETURNING *`, values);
+        Mlog.log(`${entity} successfully updated`);
         return res.rows[0];
        }
     }
@@ -158,9 +165,10 @@ export default class PostgreSQL extends Core {
        console.log('Please enter a Id to remove');
       }else{
       const res = await this.client.query(`DELETE FROM ${entity} WHERE id = ${data} RETURNING *`);
+      Mlog.log(`${entity} successfully deleted`);
       return res.rows[0];
       }
-      
+
     }
 
 

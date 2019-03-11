@@ -1,8 +1,10 @@
 import mOrm from "./mOrm";
 import Student from "./entities/student";
+import Mlog from "./libs/mLog";
 
 (async () => {
     const orm = new mOrm();
+
     try{
         await orm.createConnection(
             {
@@ -44,9 +46,7 @@ import Student from "./entities/student";
         const updateStudent = await studentEntity.update(Upstudent)
         // console.log(`Update ${updateStudent.firstname} successfully` );
         const removeStudent = await studentEntity.remove(id)
-        console.log(`${removeStudent.firstname} delete successfully` );
-        
-                
+        // console.log(`${removeStudent.firstname} delete successfully` );     
 
     }catch(error){
         console.log(error);
