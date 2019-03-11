@@ -22,15 +22,15 @@ import Student from "./entities/student";
           firstname: 'Dora',
           lastname: 'Lexploratrice'
         };
-
-         const studentEntity = orm.getEntity('Student');
-        // console.log(studentEntity);
-        // console.log(student);
+        
+        const studentEntity = orm.getEntity('Student');
         const saved = await studentEntity.save(student);
         console.log(`New student ${saved.firstname}`);
-        const count = await studentEntity.count();
-        console.log(`${count} rows in the table ${studentEntity.name}`);
-        
+        // const count = await studentEntity.count();
+        // console.log(`${count} rows in the table ${studentEntity.name}`);
+        const students = await studentEntity.findAll({ attributes: student});
+        console.log(`All curent ${studentEntity.name}:`,students);
+                
 
     }catch(error){
         console.log(error);

@@ -1,6 +1,6 @@
 import Core from "./core";
 import {Client } from 'pg';
-import Student from "../entities/student";
+import {isEmpty} from 'lodash';
 
 export default class PostgreSQL extends Core {
 
@@ -85,7 +85,7 @@ export default class PostgreSQL extends Core {
 
       for (const entity of arrayEntities) {
         const { name: tableName } = entity.meta();
-        let queryDelete = `DROP TABLE ${tableName}`
+        let queryDelete = `DROP TABLE IF EXISTS ${tableName}`
         return queryDelete;
       }
     
@@ -96,13 +96,22 @@ export default class PostgreSQL extends Core {
       const values = Object.values(data);
       const params = values.map((_, i) => `$${i + 1}`).join(',')
       
-      const res = await this.client.query(`INSERT INTO ${entity.name}(${keys}) VALUES(${params}) RETURNING *`, values);
+      const res = await this.client.query(`INSERT INTO ${entity}(${keys}) VALUES(${params}) RETURNING *`, values);
       return res.rows[0];
 
     }
 
     async count(entity){
-      const res = await this.client.query(`SELECT COUNT(*) FROM ${entity.name}`);
+      const res = await this.client.query(`SELECT COUNT(*) FROM ${entity}`);
       return res.rows[0].count;
+    }
+
+    async findAll(entity,{attributes}){
+      
+      const params = Object.keys(attributes)
+      const query = isEmpty(params) ? '*' : params.join(",")
+
+      const res = await this.client.query(`SELECT ${query} FROM ${entity}`);
+      return res.rows;  
     }
 }
