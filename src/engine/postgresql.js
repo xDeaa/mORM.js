@@ -133,7 +133,7 @@ export default class PostgreSQL extends Core {
       const values = Object.values(where)
 
       const search = isEmpty(attributes) ? '*' : attributes.join(",")
-      const res = await this.client.query(`SELECT ${search} FROM ${entity} WHERE ${keys} LIMIT 1 `,values)
+      const res = await this.client.query(`SELECT ${search} FROM ${entity} WHERE ${keys} LIMIT 5 `,values)
       return res.rows[0];
        
      }
@@ -150,6 +150,18 @@ export default class PostgreSQL extends Core {
         const res = await this.client.query(`UPDATE ${entity} SET ${keys} WHERE id = ${data.id} RETURNING *`, values);
         return res.rows[0];
        }
-       
     }
+
+    async remove(entity,data){
+
+      if(data === null || data === undefined){
+       console.log('Please enter a Id to remove');
+      }else{
+      const res = await this.client.query(`DELETE FROM ${entity} WHERE id = ${data} RETURNING *`);
+      return res.rows[0];
+      }
+      
+    }
+
+
 }

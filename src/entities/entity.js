@@ -22,6 +22,8 @@ export default class Entity {
     async update(data) {
       return this.dbInstance.update(this.name,data);
     }
-    async remove(data) {}
+    async remove(data) {
+      return this.dbInstance.remove(this.name,data);
+    }
 
   }

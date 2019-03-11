@@ -42,7 +42,9 @@ import Student from "./entities/student";
         const studentByOne = await studentEntity.findByOne({where : {firstname:'Dora '}, attributes: ["firstname"]});
         // console.log('Student : ', studentByOne);
         const updateStudent = await studentEntity.update(Upstudent)
-        console.log(`Update ${updateStudent.firstname} successfully` );
+        // console.log(`Update ${updateStudent.firstname} successfully` );
+        const removeStudent = await studentEntity.remove(id)
+        console.log(`${removeStudent.firstname} delete successfully` );
         
                 
 
