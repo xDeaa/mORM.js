@@ -128,13 +128,12 @@ export default class PostgreSQL extends Core {
      }  
      
      async findByOne(entity,{where = {} ,attributes = []}){
-       
+
       const keys = Object.keys(where).map((key, i) => `${key} = $${i + 1}`).join(' AND ');
       const values = Object.values(where)
 
       const search = isEmpty(attributes) ? '*' : attributes.join(",")
       const res = await this.client.query(`SELECT ${search} FROM ${entity} WHERE ${keys} LIMIT 1 `,values)
-
       return res.rows[0];
        
      }

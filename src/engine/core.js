@@ -1,4 +1,5 @@
 import Student from "../entities/student"
+import mDump from "../libs/mDump";
 
 export default class Core {
 
@@ -14,7 +15,7 @@ export default class Core {
     }
 
     dump(){
-        console.log(`Database Informations:
+        mDump(`Database Informations:
         host: ${this.host}
         port: ${this.port}
         username: ${this.username}

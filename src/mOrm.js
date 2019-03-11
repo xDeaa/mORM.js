@@ -45,6 +45,7 @@ export default class mOrm {
      switch(this.config.type){
         case 'postgres':
           this.dbInstance = new PostgreSQL(this.config,this.entities);
+          this.dbInstance.dump();
           break;
 
         default:
