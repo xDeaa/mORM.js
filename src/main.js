@@ -1,13 +1,11 @@
 import mOrm from "./mOrm";
-import Student from "./entities/student";
-import Mlog from "./libs/mLog";
 
 (async () => {
     const orm = new mOrm();
 
     try{
         await orm.createConnection();
-        
+
         let student = {
             firstname: 'Andrea',
             lastname: 'Serrano'
