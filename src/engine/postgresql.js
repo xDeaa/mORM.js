@@ -1,15 +1,12 @@
 import Core from "./core";
 import {Client } from 'pg';
+import Student from "../entities/student";
 
 export default class PostgreSQL extends Core {
 
-    constructor(options){
-        super(options);
-    }
+  async initialize(){
 
-    async initialize(){
-
-        const {host, port, username, password, database} = this;
+        const {host, port, username, password, database, synchronize, entities} = this;
 
         this.client = new Client({
             user: username,
@@ -18,19 +15,92 @@ export default class PostgreSQL extends Core {
             database,
             password
         })
-        
+
         try {
-
-            await this.client.connect();
-
-            this.client.query('SELECT NOW()', (err,res) => {
-                console.log(err, res);
-                this.client.end();
+         
+          await this.client.connect();
+          if(synchronize){
+            const queryDelete = this.dropTable(entities);
+            this.client.query(queryDelete, (err,res)=> {
+              if(err){
+                throw new Error(err);
+              }
             })
-            
+          }
+          const query = this.createTable(entities);
+          
+          this.client.query(query,(err,res)=> {
+            if(err){
+              throw new Error(err)
+            }
+          })
+
+          
+          
         } catch (e) {
-            console.log(` Database ${database} doesn't exist`);
+          console.log(e)
+          console.log(` Database ${database} doesn't exist`);
         }
-        
+
+    }
+
+    createTable(entities){
+      const arrayEntities = Object.values(entities);
+
+          for (const entity of arrayEntities) {
+            const { name: tableName, columns } = entity.meta();
+            let queryCreate = `CREATE TABLE IF NOT EXISTS ${tableName}( `
+
+            for (const [key, item] of Object.entries(columns)) {
+            let type;
+
+              if (item.primary) {
+                if (item.generated) {
+                queryCreate += `${key} SERIAL`;
+                }
+                queryCreate += ` PRIMARY KEY`;
+                queryCreate += ", ";
+
+              }else{
+                switch (item.type) {
+                  case "string":
+                  type = "VARCHAR(255)";
+                    break;
+                  case "number":
+                    type = "INT";
+                    break;
+    
+                default:
+                    type = item.type;
+                }
+                queryCreate += `${key} ${type}`;
+                queryCreate += ", ";
+              }
+            }
+             queryCreate = queryCreate.slice(0, -2) + ")";
+             return queryCreate;
+          }
+    }
+
+    dropTable(entities){
+      const arrayEntities = Object.values(entities);
+
+      for (const entity of arrayEntities) {
+        const { name: tableName } = entity.meta();
+        let queryDelete = `DROP TABLE ${tableName}`
+        return queryDelete;
+      }
+    
+    }
+
+    async save(entity,data){
+      // entity = Object.values(entity);
+      const keys = Object.keys(data).join(',');
+      const values = Object.values(data);
+      const params = values.map((_, i) => `$${i + 1}`).join(',')
+      
+      const res = await this.client.query(`INSERT INTO ${entity.name}(${keys}) VALUES(${params}) RETURNING *`, values);
+      return res.rows[0];
+
     }
 }

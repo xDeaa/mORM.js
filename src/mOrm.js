@@ -2,11 +2,12 @@ import {isEmpty} from 'lodash';
 import {existsSync} from 'fs';
 import path from 'path';
 import PostgreSQL from './engine/postgresql';
+import Entity from './entities/entity';
 
 export default class mOrm {
     configPathName = "./mOrm.config.json";
 
-    async createConnection(dbConfig = {}) {
+    async createConnection(dbConfig = {}, extras = {entities: []}) {
 
       if(isEmpty(dbConfig)){
 
@@ -19,7 +20,7 @@ export default class mOrm {
         if(dbConfig.uri){
           const regexp = /^(.*):\/\/(.*):(.*)@(.*):(\d+)\/(.*)$/g
           const [, type, username, password,  host, port, database]= regexp.exec(dbConfig.uri);
-          
+
           this.config = {
             type,
             host,
@@ -27,18 +28,23 @@ export default class mOrm {
             username,
             password,
             database,
-            
+
           };
 
         }else{
-          thisconfig = dbConfig;
+          this.config = dbConfig;
         }
       }
-       console.log(this.config);
+
+      this.entities = {};
+
+      for (const entities of extras.entities) {
+        this.entities[entities.prototype.constructor.name] = entities;
+      }
 
      switch(this.config.type){
         case 'postgres':
-          this.dbInstance = new PostgreSQL(this.config);
+          this.dbInstance = new PostgreSQL(this.config,this.entities);
           break;
 
         default:
@@ -46,6 +52,10 @@ export default class mOrm {
       }
 
       await this.dbInstance.initialize();
-      
+
+    }
+
+    getEntity(name){
+        return new this.entities[name](this.dbInstance);
     }
   }
