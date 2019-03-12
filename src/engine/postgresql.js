@@ -60,6 +60,10 @@ export default class PostgreSQL extends Core {
                   case "number":
                     type = "INT";
                     break;
+
+                  case "text":
+                    type = "TEXT";
+                    break;
     
                 default:
                     type = item.type;
