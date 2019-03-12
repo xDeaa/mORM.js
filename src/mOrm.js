@@ -6,10 +6,10 @@ import Entity from './entities/entity';
 import Config from './mOrm.config';
 
 export default class mOrm {
-    configPathName = Config;
-
-    async createConnection(dbConfig = {}, extras = {entities: []}) {
-
+    configPathName = "./mOrm.config.json";
+    
+    async createConnection(dbConfig = {}, extras = {entities: []} = {}) {
+      
       if(isEmpty(dbConfig)){
 
         if(!existsSync(path.join(__dirname,this.configPathName))){

@@ -175,5 +175,9 @@ export default class PostgreSQL extends Core {
 
     }
 
+    // async hasOne(entity,foreignKey){
+
+    // }
+
 
 }

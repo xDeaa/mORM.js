@@ -1,10 +1,11 @@
 import mOrm from "./mOrm";
+import Student from "./entities/student";
 
 (async () => {
     const orm = new mOrm();
 
     try{
-        await orm.createConnection();
+        await orm.createConnection({},{entities: [Student]});
 
         let student = {
             firstname: 'Andrea',
@@ -38,7 +39,7 @@ import mOrm from "./mOrm";
         console.log(`Update ${updateStudent.firstname} successfully` );
 
         const removeStudent = await studentEntity.remove(id)
-        console.log(`${removeStudent.firstname} delete successfully` );     
+        console.log(`${studentEntity.name} delete successfully` );     
 
     }catch(error){
         console.log(error);
