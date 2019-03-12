@@ -22,24 +22,24 @@ import Project from "./entities/project";
             description: 'short text of test...'
         }
         
-        let id = 3;
+        let id = 4;
         
         const studentEntity = orm.getEntity('Student');
-        const saved = await studentEntity.save(student);
-        console.log(`New ${studentEntity.name} ${saved.firstname}`);
+        // const saved = await studentEntity.save(student);
+        // console.log(`New ${studentEntity.name} ${saved.firstname}`);
 
-        const count = await studentEntity.count();
-        console.log(`${count} rows in the table ${studentEntity.name}`);
+        // const count = await studentEntity.count();
+        // console.log(`${count} rows in the table ${studentEntity.name}`);
 
-        const studentsAttributes = await studentEntity.findAll({ attributes: ["firstname"]});
-        const students = await studentEntity.findAll();
-        console.log(`All curent ${studentEntity.name}:`,studentsAttributes);
-        console.log(`All curent ${studentEntity.name}:`,students);
+        // const studentsAttributes = await studentEntity.findAll({ attributes: ["firstname"]});
+        // const students = await studentEntity.findAll();
+        // console.log(`All curent ${studentEntity.name}:`,studentsAttributes);
+        // console.log(`All curent ${studentEntity.name}:`,students);
 
         const studentByPkAttributes = await studentEntity.findByPk(id,{ attributes: ["firstname", "lastname"]});
         const studentByPk = await studentEntity.findByPk(id);
         console.log(`${studentEntity.name} ${id}:`,studentByPkAttributes);
-        console.log(`${studentEntity.name}${id}:`,studentByPk);
+        // console.log(`${studentEntity.name}${id}:`,studentByPk);
 
         const studentByOneAttributes = await studentEntity.findByOne({where : {firstname:'Andrea'}, attributes: ["lastname"]});
         const studentByOne = await studentEntity.findByOne({where : {firstname:'Andrea'},});
@@ -49,8 +49,8 @@ import Project from "./entities/project";
         const updateStudent = await studentEntity.update(studentByOne)
         console.log(`Update ${updateStudent.firstname} successfully` );
 
-        const removeStudent = await studentEntity.remove(id)
-        console.log(`${studentEntity.name} delete successfully` ); 
+        // const removeStudent = await studentEntity.remove(id)
+        // console.log(`${studentEntity.name} delete successfully` ); 
         
 
         const noteEntity = orm.getEntity('Note');
@@ -76,10 +76,10 @@ import Project from "./entities/project";
         console.log(`${noteEntity.name}: `, noteByOne);
 
         const updateNote = await noteEntity.update(noteByOne)
-        console.log(`Update ${updateNote.firstname} successfully` );
+        console.log(`Update ${updateNote.note} successfully` );
 
-        const removeNote = await noteEntity.remove(id)
-        console.log(`${noteEntity.name} delete successfully`); 
+        // const removeNote = await noteEntity.remove(id)
+        // console.log(`${noteEntity.name} delete successfully`); 
 
 
         const projectEntity = orm.getEntity('Project');
@@ -105,10 +105,10 @@ import Project from "./entities/project";
         console.log(`${projectEntity.name}: `, projectByOne);
 
         const updateProject = await projectEntity.update(projectByOne)
-        console.log(`Update ${updateProject.firstname} successfully` );
+        console.log(`Update ${updateProject.name} successfully` );
 
-        const removeProject = await projectEntity.remove(id)
-        console.log(`${projectEntity.name} delete successfully`);
+        // const removeProject = await projectEntity.remove(id)
+        // console.log(`${projectEntity.name} delete successfully`);
 
     }catch(error){
         console.log(error);

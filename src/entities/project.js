@@ -6,6 +6,10 @@ export default class Project extends Entity {
         super(dbInstance,"Project");
     }
 
+    getPk(){
+        return Entity.findPk(Project.meta())
+      }
+
     static meta() {
       return {
         name: "Project",

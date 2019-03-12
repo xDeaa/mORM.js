@@ -125,13 +125,14 @@ export default class PostgreSQL extends Core {
 
     async findByPk(entity,id,{attributes = []}){
       const search = isEmpty(attributes) ? '*' : attributes.join(",");
-      
+      const idEntity = entity.getPk();
+    
       if(id === undefined || id == null ){
         console.log("You must enter a id");
 
         return;
       }else{
-        const res = await this.client.query(`SELECT ${search} FROM ${entity} WHERE id = ${id}`)
+        const res = await this.client.query(`SELECT ${search} FROM ${entity.name} WHERE ${idEntity} = ${id}`)
         Mlog.log(`${entity} successfully find by primary key`);
         return res.rows[0];
       }      
@@ -143,7 +144,7 @@ export default class PostgreSQL extends Core {
       const values = Object.values(where)
 
       const search = isEmpty(attributes) ? '*' : attributes.join(",")
-      const res = await this.client.query(`SELECT ${search} FROM ${entity} WHERE ${keys} LIMIT 5 `,values)
+      const res = await this.client.query(`SELECT ${search} FROM ${entity.name} WHERE ${keys} LIMIT 5 `,values)
       Mlog.log(`${entity}  successfully find by one`);
       return res.rows[0];
        
@@ -152,32 +153,32 @@ export default class PostgreSQL extends Core {
      async update(entity,data){
        const values = Object.values(data)
        const keys = Object.keys(data).map((key, i) => `${key} = $${i + 1}`).join(',');
+       const idEntity = entity.getPk();
         
        if(!data.id){
          console.log('Please enter a Id to update');
 
        }else{
-        const res = await this.client.query(`UPDATE ${entity} SET ${keys} WHERE id = ${data.id} RETURNING *`, values);
+        const res = await this.client.query(`UPDATE ${entity.name} SET ${keys} WHERE ${idEntity} = ${data.id} RETURNING *`, values);
         Mlog.log(`${entity} successfully updated`);
         return res.rows[0];
        }
     }
 
     async remove(entity,data){
+      const idEntity = entity.getPk();
 
       if(data === null || data === undefined){
        console.log('Please enter a Id to remove');
       }else{
-      const res = await this.client.query(`DELETE FROM ${entity} WHERE id = ${data} RETURNING *`);
+      const res = await this.client.query(`DELETE FROM ${entity.name} WHERE ${idEntity} = ${data} RETURNING *`);
       Mlog.log(`${entity} successfully deleted`);
       return res.rows[0];
       }
 
     }
 
-    // async hasOne(entity,foreignKey){
 
-    // }
 
 
 }

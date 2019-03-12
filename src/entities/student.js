@@ -6,6 +6,10 @@ export default class Student extends Entity {
         super(dbInstance,"Student");
     }
 
+    getPk(){
+      return Entity.findPk(Student.meta())
+    }
+    
     static meta() {
       return {
         name: "Student",
