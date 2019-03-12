@@ -33,4 +33,8 @@ export default class Entity {
       throw "Model doesn't have PrimaryKey !"
   }
 
+  async hasOne(entity){
+    return this.dbInstance.hasOne(this.name,entity);
+  }
+
   }

@@ -2,6 +2,7 @@ import Core from "./core";
 import {Client } from 'pg';
 import {isEmpty} from 'lodash';
 import Mlog from "../libs/mLog";
+import Entity from '../entities/entity';
 
 export default class PostgreSQL extends Core {
 
@@ -89,7 +90,7 @@ export default class PostgreSQL extends Core {
 
       for (const entity of arrayEntities) {
         const { name: tableName } = entity.meta();
-        let queryDelete = `DROP TABLE IF EXISTS ${tableName}`
+        let queryDelete = `DROP TABLE IF EXISTS ${tableName} CASCADE`
         try {
           await this.client.query(queryDelete);
           Mlog.log(`Table ${tableName} deleted successfully`);
@@ -171,14 +172,22 @@ export default class PostgreSQL extends Core {
       if(data === null || data === undefined){
        console.log('Please enter a Id to remove');
       }else{
-      const res = await this.client.query(`DELETE FROM ${entity.name} WHERE ${idEntity} = ${data} RETURNING *`);
+      const res = await this.client.query(`DELETE FROM ${entity.name}  WHERE ${idEntity} = ${data} RETURNING *`);
       Mlog.log(`${entity} successfully deleted`);
       return res.rows[0];
       }
 
     }
 
+    async hasOne(entity,entityForeign){
+      const foreignKey = Entity.findPk(entityForeign.meta());
+      const nameForeign = entityForeign.meta().name.toLowerCase() + `_${foreignKey}`;
 
+      const res = await this.client.query(`ALTER TABLE ${entity} ADD COLUMN IF NOT EXISTS ${nameForeign} INT REFERENCES ${entityForeign.meta().name} (${foreignKey})`);
+      Mlog.log(`${nameForeign} add to table ${entity}`);
+
+      return res.rows[0];
+    }
 
 
 }
